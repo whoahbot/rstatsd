@@ -1,18 +1,11 @@
-# Rstatsd
+# rstatsd
 
-TODO: Write a gem description
+Rstatsd is a ruby version of statsd that doesn't require graphite as a
+back-end. It uses redis to store the datasets.
+
+This is very early software and not ready for production use.
 
 ## Installation
-
-Add this line to your application's Gemfile:
-
-    gem 'rstatsd'
-
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
 
     $ gem install rstatsd
 
