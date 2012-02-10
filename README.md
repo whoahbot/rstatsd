@@ -1,9 +1,13 @@
 # rstatsd
 
-Rstatsd is a ruby version of statsd that doesn't require graphite as a
-back-end. It uses redis to store the datasets.
+rstatsd is a ruby based daemon for capturing data from statsd clients.
 
-This is very early software and not ready for production use.
+rstatsd is inspired by the work at etsy to measure everything, measure
+anything. They use a combination of node.js and graphite to capture and
+graph this data.
+
+The goals of this project are to be simple to install, and easy to request
+a graph of any data that is stored in the back-end.
 
 ## Installation
 
