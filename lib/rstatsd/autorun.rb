@@ -1,4 +1,5 @@
-require File.expand_path('../lib/rstatsd', __FILE__)
+require_relative 'server'
+require_relative 'collector'
 
 EventMachine::run {
   EventMachine::open_datagram_socket("127.0.0.1", 8125, Rstatsd::Collector)
