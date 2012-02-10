@@ -4,23 +4,23 @@
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     <script type="text/javascript">
       google.load("visualization", "1", {packages:["corechart"]});
+      google.load("jquery", "1.7.1");
       google.setOnLoadCallback(drawChart);
       function drawChart() {
-        var data = new google.visualization.DataTable();
-        data.addColumn('string', 'Timestamp');
-        data.addColumn('number', 'foobars');
-        data.addRows([
-          ["1328766290", 1],
-          ["1328767262", 2]
-        ]);
+        $.get('http://localhost:8126/stats', function(data) {
+          var dataTable = new google.visualization.DataTable();
+          dataTable.addColumn('string', 'Timestamp');
+          dataTable.addColumn('number', 'foobars');
+          dataTable.addRows(data);
 
-        var options = {
-          width: 400, height: 240,
-          title: 'Company Performance'
-        };
+          var options = {
+            width: 400, height: 240,
+            title: 'Company Performance'
+          };
 
-        var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
-        chart.draw(data, options);
+          var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+          chart.draw(dataTable, options);
+        });
       }
     </script>
   </head>
