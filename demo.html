@@ -8,14 +8,17 @@
       google.setOnLoadCallback(drawChart);
       function drawChart() {
         $.get('http://localhost:8126/stats', function(data) {
+          var formattedData = data.map(function(d) {
+            return [new Date(parseInt(d[0]) * 1000).toString(), d[1]];
+          });
           var dataTable = new google.visualization.DataTable();
           dataTable.addColumn('string', 'Timestamp');
           dataTable.addColumn('number', 'foobars');
-          dataTable.addRows(data);
+          dataTable.addRows(formattedData);
 
           var options = {
-            width: 400, height: 240,
-            title: 'Company Performance'
+            width: 800, height: 480,
+            title: 'Silly Graphs'
           };
 
           var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
