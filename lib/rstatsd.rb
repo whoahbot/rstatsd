@@ -1,6 +1,8 @@
 require 'eventmachine'
-require File.expand_path('../rstatsd/collector', __FILE__)
-require File.expand_path('../rstatsd/server', __FILE__)
+
+require_relative './rstatsd/collector'
+require_relative './rstatsd/server'
+require_relative './rstatsd/helpers'
 
 module Rstatsd
 end

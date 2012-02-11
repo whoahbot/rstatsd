@@ -1,7 +1,10 @@
 require 'em-hiredis'
+require_relative './helpers'
 
 module Rstatsd
   class Collector < EventMachine::Connection
+    include Rstatsd::Helpers
+
     def initialize
       super
       @redis = EM::Hiredis.connect
@@ -12,7 +15,8 @@ module Rstatsd
 
     def receive_data(data)
       bits = data.split(':')
-      key = bits.shift.gsub(/\s+/, '_').gsub(/\//, '-').gsub(/[^a-zA-Z_\-0-9\.]/, '')
+      key = format_key(bits.first)
+
       @redis.incr(key).callback {|value|
         @redis.rpush("list:#{key}", "#{value}:#{Time.now.to_i}")
         puts "list:#{key}", "#{value}:#{Time.now.to_i}"
@@ -21,6 +25,7 @@ module Rstatsd
       #  puts bit.split("|")
       #end
     end
+
 
     def unbind
     end

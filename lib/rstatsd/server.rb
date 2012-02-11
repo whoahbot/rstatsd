@@ -2,9 +2,12 @@ require 'em-hiredis'
 require 'eventmachine_httpserver'
 require 'evma_httpserver/response'
 
+require_relative './helpers'
+
 module Rstatsd
   class Server < EventMachine::Connection
     include EventMachine::HttpServer
+    include Rstatsd::Helpers
 
     def post_init
       super
@@ -21,7 +24,8 @@ module Rstatsd
         response.send_response
       when '/stats'
         data = 'test'
-        key = data.strip.gsub(/\s+/, '_').gsub(/\//, '-').gsub(/[^a-zA-Z_\-0-9\.]/, '')
+        key = format_key(data)
+
         @redis.lrange("list:#{key}", 0, -1).callback {|datapoint|
           stats = datapoint.map do |point|
             val, time = point.split(":")
