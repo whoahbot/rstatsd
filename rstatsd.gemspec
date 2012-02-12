@@ -5,7 +5,7 @@ Gem::Specification.new do |gem|
   gem.authors       = ["Whoahbot!"]
   gem.email         = ["whoahbot@gmail.com"]
   gem.description   = %q{a stats daemon that stores data in redis}
-  gem.summary       = %q{rstatsd is a ruby variation on statsd, without all the dependencies}
+  gem.summary       = %q{rstatsd is a simpler ruby implementaiton of statsd, storing the data in redis}
   gem.homepage      = ""
 
   gem.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }

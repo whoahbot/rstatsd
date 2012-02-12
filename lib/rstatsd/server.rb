@@ -20,10 +20,10 @@ module Rstatsd
 
       case @http_request_uri
       when '/'
-        demo = ERB.new(File.open('demo.erb').read).result(binding)
+        chart = ERB.new(File.open('chart.erb').read).result(binding)
 
         response.content_type 'text/html'
-        response.content = demo
+        response.content = chart
         response.send_response
       when '/stats'
         key = format_key(@http_query_string)

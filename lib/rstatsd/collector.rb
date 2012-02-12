@@ -17,11 +17,20 @@ module Rstatsd
       bits = data.split(':')
       key = format_key(bits.first)
 
-      @redis.incr(key).callback {|value|
-        @redis.rpush("list:#{key}", "#{value}:#{Time.now.to_i}")
-      }
+      fields = bits.last.split("|")
+      case fields[1]
+      when 'c'
+        #increment counter
+        @redis.incr(key).callback do |value|
+          @redis.rpush("counter:#{key}", "#{value}:#{Time.now.to_i}")
+        end
+      when 'ms'
+        #update timer
+        @redis.rpush("timer:#{key}", "#{fields[0]}:#{Time.now.to_i}")
+      else
+        # invalid update
+      end
     end
-
 
     def unbind
     end
