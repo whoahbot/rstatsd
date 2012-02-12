@@ -25,7 +25,7 @@ module Rstatsd
         response.content_type 'text/html'
         response.content = chart
         response.send_response
-      when '/stats'
+      when '/stats.json'
         key = format_key(@http_query_string)
 
         @redis.lrange("list:#{key}", 0, -1).callback {|datapoint|
@@ -36,6 +36,14 @@ module Rstatsd
           response.content_type 'application/json'
           response.content = stats
           response.send_response
+        }
+      when '/stats.png'
+        key = format_key(@http_query_string)
+        @redis.lrange("list:#{key}", 0, -1).callback {|datapoint|
+          stats = datapoint.map do |point|
+            val, time = point.split(":")
+            [time, val.to_i]
+          end
         }
       end
     end

@@ -1,4 +1,4 @@
-require_relative '../../lib/rstatsd'
+require 'spec_helper'
 
 describe Rstatsd::Collector do
   let!(:hiredis) {
