@@ -19,11 +19,7 @@ module Rstatsd
 
       @redis.incr(key).callback {|value|
         @redis.rpush("list:#{key}", "#{value}:#{Time.now.to_i}")
-        puts "list:#{key}", "#{value}:#{Time.now.to_i}"
       }
-      #bits.each do |bit|
-      #  puts bit.split("|")
-      #end
     end
 
 

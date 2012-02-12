@@ -1,6 +1,7 @@
 require 'em-hiredis'
 require 'eventmachine_httpserver'
 require 'evma_httpserver/response'
+require 'erb'
 
 require_relative './helpers'
 
@@ -19,12 +20,13 @@ module Rstatsd
 
       case @http_request_uri
       when '/'
+        demo = ERB.new(File.open('demo.erb').read).result(binding)
+
         response.content_type 'text/html'
-        response.content = File.read('demo.html')
+        response.content = demo
         response.send_response
       when '/stats'
-        data = 'test'
-        key = format_key(data)
+        key = format_key(@http_query_string)
 
         @redis.lrange("list:#{key}", 0, -1).callback {|datapoint|
           stats = datapoint.map do |point|

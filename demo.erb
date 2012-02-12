@@ -7,7 +7,7 @@
       google.load("jquery", "1.7.1");
       google.setOnLoadCallback(drawChart);
       function drawChart() {
-        $.get('http://localhost:8126/stats', function(data) {
+        $.get('http://localhost:8126/stats?<%= @http_query_string %>', function(data) {
           var formattedData = data.map(function(d) {
             return [new Date(parseInt(d[0]) * 1000).toString(), d[1]];
           });
