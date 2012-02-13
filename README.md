@@ -28,8 +28,6 @@ Start the collection daemon and server
 Add some data (you'll need a statsd compatible client like statsd-ruby)
 
     $ irb
-    irb> gem 'statsd-ruby'
-    => true
     irb> require 'statsd'
     => true
     irb> s = Statsd.new('localhost')
