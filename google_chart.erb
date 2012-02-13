@@ -9,7 +9,7 @@
       function drawChart() {
         $.get('http://localhost:8126/stats.json?<%= @http_query_string %>', function(data) {
           var formattedData = data.map(function(d) {
-            return [new Date(parseInt(d[0]) * 1000).toString(), d[1]];
+            return [new Date(parseInt(d[1]) * 1000).toString(), d[0]];
           });
           var dataTable = new google.visualization.DataTable();
           dataTable.addColumn('string', 'Timestamp');

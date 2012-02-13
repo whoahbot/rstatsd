@@ -4,6 +4,7 @@ require 'evma_httpserver/response'
 require 'erb'
 
 require_relative './helpers'
+require_relative './charts'
 
 module Rstatsd
   class Server < EventMachine::Connection
@@ -20,7 +21,7 @@ module Rstatsd
 
       case @http_request_uri
       when '/'
-        chart = ERB.new(File.open('chart.erb').read).result(binding)
+        chart = ERB.new(File.open('google_chart.erb').read).result(binding)
 
         response.content_type 'text/html'
         response.content = chart
@@ -31,7 +32,7 @@ module Rstatsd
         @redis.lrange("list:#{key}", 0, -1).callback {|datapoint|
           stats = datapoint.map do |point|
             val, time = point.split(":")
-            [time, val.to_i]
+            [val.to_i, time]
           end
           response.content_type 'application/json'
           response.content = stats
@@ -39,11 +40,12 @@ module Rstatsd
         }
       when '/stats.png'
         key = format_key(@http_query_string)
-        @redis.lrange("list:#{key}", 0, -1).callback {|datapoint|
-          stats = datapoint.map do |point|
-            val, time = point.split(":")
-            [time, val.to_i]
-          end
+        @redis.lrange("list:#{key}", 0, -1).callback {|data|
+          chart = Rstatsd::Charts::Line.new(data).process
+
+          response.content_type 'image/png'
+          response.content = chart.png.to_blob
+          response.send_response
         }
       end
     end
