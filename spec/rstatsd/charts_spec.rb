@@ -7,7 +7,7 @@ describe Rstatsd::Charts do
     end
 
     let!(:png_canvas) {
-      PNG::Canvas = stub.as_null_object
+      PNG::Canvas.stub(:new).and_return(stub.as_null_object)
     }
 
     let(:line_chart) {

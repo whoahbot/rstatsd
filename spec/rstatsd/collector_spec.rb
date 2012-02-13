@@ -1,8 +1,12 @@
 require 'spec_helper'
 
 describe Rstatsd::Collector do
-  let!(:hiredis) {
-    EM::Hiredis = stub.as_null_object 
+  let(:hiredis) {
+    stub.as_null_object
+  }
+
+  let(:redis_result) {
+    redis_result = stub
   }
 
   def with_em_connection
@@ -12,7 +16,12 @@ describe Rstatsd::Collector do
     }
   end
 
+  before do
+    EM::Hiredis.stub(:connect).and_return(hiredis)
+  end
+
   context "receiving an increment packet 'foobar:1|c'" do
+
     it "should increment the counter stored at the keyname" do
       with_em_connection do
         hiredis.should_receive(:incr).with('foobar').and_return(stub.as_null_object)
@@ -20,9 +29,16 @@ describe Rstatsd::Collector do
       end
     end
 
-    let(:redis_result) {
-      redis_result = mock
-    }
+    it "should rpush the counter value into redis" do
+      with_em_connection do
+        Timecop.freeze(Time.now) do
+          hiredis.should_receive(:incr).with('foobar').and_return(redis_result)
+          redis_result.should_receive(:callback).and_yield('1')
+          hiredis.should_receive(:rpush).with('counter:foobar', "1:#{Time.now.to_i}").and_return(stub.as_null_object)
+          Rstatsd::Collector.new(stub).receive_data('foobar:1|c')
+        end
+      end
+    end
 
     it "should rpush the incremented value onto a list in the format counter:keyname" do
       with_em_connection do
@@ -40,7 +56,21 @@ describe Rstatsd::Collector do
 
   context "decrementing a value" do
     it "should decrement the counter stored at the keyname" do
-      #'foobar:-1|c'
+      with_em_connection do
+        hiredis.should_receive(:incr).with('foobar').and_return(stub.as_null_object)
+        Rstatsd::Collector.new(stub).receive_data('foobar:1|c')
+      end
+    end
+
+    it "should rpush the returned counter value into redis" do
+      with_em_connection do
+        Timecop.freeze(Time.now) do
+          hiredis.should_receive(:decr).with('foobar').and_return(redis_result)
+          redis_result.should_receive(:callback).and_yield('-1')
+          hiredis.should_receive(:rpush).with('counter:foobar', "-1:#{Time.now.to_i}").and_return(stub.as_null_object)
+          Rstatsd::Collector.new(stub).receive_data('foobar:-1|c')
+        end
+      end
     end
   end
 end

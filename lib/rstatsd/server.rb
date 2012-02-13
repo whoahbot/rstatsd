@@ -29,7 +29,7 @@ module Rstatsd
       when '/stats.json'
         key = format_key(@http_query_string)
 
-        @redis.lrange("list:#{key}", 0, -1).callback {|datapoint|
+        @redis.lrange("counter:#{key}", 0, -1).callback {|datapoint|
           stats = datapoint.map do |point|
             val, time = point.split(":")
             [val.to_i, time]
@@ -40,7 +40,7 @@ module Rstatsd
         }
       when '/stats.png'
         key = format_key(@http_query_string)
-        @redis.lrange("list:#{key}", 0, -1).callback {|data|
+        @redis.lrange("counter:#{key}", 0, -1).callback {|data|
           chart = Rstatsd::Charts::Line.new(data).process
 
           response.content_type 'image/png'

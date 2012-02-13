@@ -20,9 +20,14 @@ module Rstatsd
       fields = bits.last.split("|")
       case fields[1]
       when 'c'
-        #increment counter
-        @redis.incr(key).callback do |value|
-          @redis.rpush("counter:#{key}", "#{value}:#{Time.now.to_i}")
+        if fields[0] == '1'
+          @redis.incr(key).callback do |value|
+            @redis.rpush("counter:#{key}", "#{value}:#{Time.now.to_i}")
+          end
+        elsif fields[0] == '-1'
+          @redis.decr(key).callback do |value|
+            @redis.rpush("counter:#{key}", "#{value}:#{Time.now.to_i}")
+          end
         end
       when 'ms'
         #update timer
