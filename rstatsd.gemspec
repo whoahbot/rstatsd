@@ -19,8 +19,6 @@ Gem::Specification.new do |gem|
   gem.add_dependency "em-hiredis"
   gem.add_dependency "eventmachine"
   gem.add_dependency "eventmachine_httpserver"
-  gem.add_dependency "png"
-  gem.add_dependency "RubyInline"
 
   gem.add_development_dependency "rspec"
   gem.add_development_dependency "timecop"

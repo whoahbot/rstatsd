@@ -4,28 +4,26 @@
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     <script type="text/javascript">
       google.load("visualization", "1", {packages:["corechart"]});
-      google.load("jquery", "1.7.1");
       google.setOnLoadCallback(drawChart);
       function drawChart() {
-
-        $.get('http://localhost:8126/stats.json?<%= @http_query_string %>', function(data) {
-          var formatter = new google.visualization.DateFormat({formatType:'medium'});
-          var formattedData = data.map(function(d) {
-            return [new Date(parseInt(d[1]) * 1000), d[0]];
-          });
-          var dataTable = new google.visualization.DataTable();
-          dataTable.addColumn('datetime', 'Timestamp');
-          dataTable.addColumn('number', 'Grebulons consumed');
-          dataTable.addRows(formattedData);
-
-          var options = {
-            width: 800, height: 480,
-            title: 'Real-time of grebulons consumed in M13 cluster'
-          };
-
-          var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
-          chart.draw(dataTable, options);
+        var data = <%= @chart.data %>;
+        var formatter = new google.visualization.DateFormat({formatType:'medium'});
+        var formattedData = data.map(function(d) {
+          return [new Date(parseInt(d[1]) * 1000), d[0]];
         });
+        var dataTable = new google.visualization.DataTable();
+        <% @chart.column_types.each do |column| %>
+            dataTable.addColumn("<%= column[0] %>", "<%= column[1] %>");
+        <% end %>
+        dataTable.addRows(formattedData);
+
+        var options = {
+          width: <%= @chart.width %>, height: <%= @chart.height %>,
+          title: "<%= @chart.title %>"
+        };
+
+        var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+        chart.draw(dataTable, options);
       }
     </script>
   </head>
