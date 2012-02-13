@@ -16,14 +16,17 @@ reduce the number of dependencies to do this to two: redis and ruby.
 ## Usage
 
 Start redis
+
     $ brew install redis
     $ redis-server /usr/local/etc/redis.conf
 
 
 Start the collection daemon and server
+
     $ rstatsd
 
 Add some data (you'll need a statsd compatible client like statsd-ruby)
+
     $ irb
     irb> gem 'statsd-ruby'
     => true
@@ -42,6 +45,7 @@ Add some data (you'll need a statsd compatible client like statsd-ruby)
 
 
 Then view the result in a web browser
+
     irb> `open  http://localhost:8126/?grebulons`
 
 Bask in the something of something-something.
