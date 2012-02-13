@@ -6,8 +6,8 @@ rstatsd is inspired by the work at etsy to measure everything, measure
 anything. They use a combination of node.js and graphite to capture and
 graph this data.
 
-The goals of this project are to be simple to install, and easy to request
-a graph of any data that is stored in the back-end.
+The goal of this project was to replicate this light-weight approach and
+reduce the number of dependencies to do this to two: redis and ruby.
 
 ## Installation
 
@@ -15,12 +15,33 @@ a graph of any data that is stored in the back-end.
 
 ## Usage
 
-TODO: Write usage instructions here
+Start redis
+    $ brew install redis
+    $ redis-server /usr/local/etc/redis.conf
 
-## Contributing
 
-1. Fork it
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Added some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create new Pull Request
+Start the collection daemon and server
+    $ rstatsd
+
+Add some data (you'll need a statsd compatible client like statsd-ruby)
+    $ irb
+    irb> gem 'statsd-ruby'
+    => true
+    irb> require 'statsd'
+    => true
+    irb> s = Statsd.new('localhost')
+    => #<Statsd:0x007fee419866d8 @host="localhost", @port=8125>
+    irb(main):004:0> s.increment('grebulons')
+    => 10
+    irb> s.increment('grebulons')
+    => 10
+    irb> s.increment('grebulons')
+    => 10
+    irb> s.increment('grebulons')
+    => 10
+
+
+Then view the result in a web browser
+    irb> `open  http://localhost:8126/?grebulons`
+
+Bask in the something of something-something.
