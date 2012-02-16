@@ -16,4 +16,10 @@ describe Rstatsd::Helpers do
       format_key('@snozzberries').should == 'snozzberries'
     end
   end
+
+  describe "#counter_key_name" do
+    it "should return counter:key_name" do
+      counter_key_name('frobozz').should == 'counter:frobozz'
+    end
+  end
 end

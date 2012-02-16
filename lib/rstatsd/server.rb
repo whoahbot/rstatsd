@@ -17,13 +17,13 @@ module Rstatsd
     end
     
     def fetch_counter(key)
-      @redis.lrange("counter:#{key}", 0, -1).callback {|datapoint|
+      @redis.lrange(counter_key_name(key), 0, -1).callback do |datapoint|
         stats = datapoint.map do |point|
           val, time = point.split(":")
           [val.to_i, time]
         end
         yield stats
-      }
+      end
     end
 
     def process_http_request

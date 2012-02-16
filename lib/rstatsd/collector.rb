@@ -22,16 +22,18 @@ module Rstatsd
       when 'c'
         if fields[0] == '1'
           @redis.incr(key).callback do |value|
-            @redis.rpush("counter:#{key}", "#{value}:#{Time.now.to_i}")
+            @redis.rpush(counter_key_name(key), "#{value}:#{Time.now.to_i}")
           end
         elsif fields[0] == '-1'
           @redis.decr(key).callback do |value|
-            @redis.rpush("counter:#{key}", "#{value}:#{Time.now.to_i}")
+            @redis.rpush(counter_key_name(key), "#{value}:#{Time.now.to_i}")
           end
         end
+        @redis.ltrim(counter_key_name(key), 10000)
       when 'ms'
         #update timer
-        @redis.rpush("timer:#{key}", "#{fields[0]}:#{Time.now.to_i}")
+        @redis.rpush(timer_key_name(key), "#{fields[0]}:#{Time.now.to_i}")
+        @redis.ltrim(timer_key_name(key), 10000)
       else
         # invalid update
       end
