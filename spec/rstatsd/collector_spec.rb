@@ -9,19 +9,11 @@ describe Rstatsd::Collector do
     redis_result = stub
   }
 
-  def with_em_connection
-    EM.run {
-      yield
-      EM.stop
-    }
-  end
-
   before do
     EM::Hiredis.stub(:connect).and_return(hiredis)
   end
 
   context "receiving an increment packet 'crumdingler:1|c'" do
-
     it "should increment the counter stored at the keyname" do
       with_em_connection do
         hiredis.should_receive(:incr).with('crumdingler').and_return(stub.as_null_object)

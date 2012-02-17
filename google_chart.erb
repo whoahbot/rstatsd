@@ -6,7 +6,7 @@
       google.load("visualization", "1", {packages:["corechart"]});
       google.setOnLoadCallback(drawChart);
       function drawChart() {
-        var data = <%= @chart.data %>;
+        var data = <%= @chart.data.first %>;
         var formatter = new google.visualization.DateFormat({formatType:'medium'});
         var formattedData = data.map(function(d) {
           return [new Date(parseInt(d[1]) * 1000), d[0]];
