@@ -44,6 +44,6 @@ Add some data (you'll need a statsd compatible client like statsd-ruby)
 
 Then view the result in a web browser
 
-    irb> `open  http://localhost:8126/?grebulons`
+    irb> `open  http://localhost:8126/?target=grebulons`
 
 Bask in the something of something-something.
