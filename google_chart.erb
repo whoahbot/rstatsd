@@ -9,9 +9,14 @@
         var data = <%= @chart.data %>;
         var formatter = new google.visualization.DateFormat({formatType:'medium'});
         var formattedData = [];
-        for (var key in data) {
+        for(var key in data) {
           if (data.hasOwnProperty(key)) {
-            formattedData.push([new Date(parseInt(key * 1000)), data[key]]);
+            var arr = [new Date(parseInt(key * 1000))];
+            var values = data[key];
+            for(var i = 0; i < values.length; i++) {
+              arr.push(values[i]);
+            }
+            formattedData.push(arr);
           }
         }
         var dataTable = new google.visualization.DataTable();

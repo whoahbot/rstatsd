@@ -45,7 +45,7 @@ describe Rstatsd::Helpers do
 
       it "should split the data into value, time pairs" do
         redis.stub(:lrange => ['1:1234567'])
-        redis_data_for('crumdingler').should == {'1234567' => 1}
+        redis_data_for('crumdingler').should == {'1234567' => [1]}
       end
     end
 
@@ -57,10 +57,7 @@ describe Rstatsd::Helpers do
       end
 
       it "should fill in 0 when there is no data from one of the targets" do
-        redis.should_receive(:lrange).with('counter:crumdingler', 0, -1).
-          and_return(['1:1234567'])
-        redis.should_receive(:lrange).with('counter:zardoz', 0, -1).
-          and_return([])
+        redis.stub(:lrange).and_return(['1:1234567'], [])
         fetch_counters(['crumdingler', 'zardoz']).
           should == {'1234567' => [1, 0]}
       end

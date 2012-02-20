@@ -25,14 +25,16 @@ module Rstatsd
     def fetch_counters(counters)
       counters.inject({}) do |memo, counter|
         data = redis_data_for(counter)
-        memo.merge(data) {|key, old, new| [old, new].flatten}
+        memo.merge(data) do |key, old, new|
+          [old, new].flatten
+        end
       end
     end
 
     def redis_data_for(key)
       redis.lrange(counter_key_name(key), 0, -1).inject({}) do |memo, point|
         val, time = point.split(":")
-        memo[time] = val.to_i
+        memo[time] = [val.to_i]
         memo
       end
     end
