@@ -6,11 +6,14 @@
       google.load("visualization", "1", {packages:["corechart"]});
       google.setOnLoadCallback(drawChart);
       function drawChart() {
-        var data = <%= @chart.data.first %>;
+        var data = <%= @chart.data %>;
         var formatter = new google.visualization.DateFormat({formatType:'medium'});
-        var formattedData = data.map(function(d) {
-          return [new Date(parseInt(d[1]) * 1000), d[0]];
-        });
+        var formattedData = [];
+        for (var key in data) {
+          if (data.hasOwnProperty(key)) {
+            formattedData.push([new Date(parseInt(key * 1000)), data[key]]);
+          }
+        }
         var dataTable = new google.visualization.DataTable();
         <% @chart.column_types.each do |column| %>
             dataTable.addColumn("<%= column[0] %>", "<%= column[1] %>");

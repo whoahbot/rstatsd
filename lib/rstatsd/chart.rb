@@ -8,7 +8,7 @@ module Rstatsd
 
     def initialize(query_string)
       @query_string = query_string
-      @data = []
+      @data = {}
     end
 
     def targets
@@ -19,8 +19,7 @@ module Rstatsd
     end
 
     def column_types
-      targets.inject([]) do |memo, target|
-        memo << ['datetime', 'Timestamp']
+      targets.inject([['datetime', 'Timestamp']]) do |memo, target|
         memo << ['number', target.capitalize]
         memo
       end
@@ -36,17 +35,9 @@ module Rstatsd
       targets.map(&:capitalize).join(', ')
     end
 
-    def chart_binding
-      binding
-    end
-
     def draw_chart
-      targets.each do |target|
-        fetch_counter(target) do |data|
-          @data << data
-          yield self
-        end
-      end
+      @data = JSON.dump(fetch_counters(targets))
+      yield self
     end
 
     def width

@@ -16,7 +16,8 @@ Gem::Specification.new do |gem|
   gem.require_paths = ["lib"]
   gem.version       = Rstatsd::VERSION
 
-  gem.add_dependency "em-hiredis"
+  gem.add_dependency "redis"
+  gem.add_dependency "hiredis"
   gem.add_dependency "eventmachine"
   gem.add_dependency "eventmachine_httpserver"
 

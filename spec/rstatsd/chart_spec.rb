@@ -55,10 +55,23 @@ describe Rstatsd::Chart do
   end
 
   describe "#column_types" do
-    it "should return an array of column types and labels that describe the data" do
-      new_chart.column_types.should ==
-        [['datetime', 'Timestamp'],
-         ['number', 'Crumdinglers']]
+    context "with one target" do
+      it "should return an array of column types and labels that describe the data" do
+        new_chart.column_types.should ==
+          [['datetime', 'Timestamp'],
+           ['number', 'Crumdinglers']]
+      end
+    end
+
+    context "with multiple targets" do
+      it "should only include one timestamp column" do
+        Rstatsd::Chart.new('target=crumdinglers&target=crambizzlers').
+          column_types.should == [
+            ['datetime', 'Timestamp'],
+            ['number', 'Crumdinglers'],
+            ['number', 'Crambizzlers']
+          ]
+      end
     end
   end
 end

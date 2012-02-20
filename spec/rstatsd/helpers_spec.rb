@@ -23,8 +23,8 @@ describe Rstatsd::Helpers do
     end
   end
 
-  describe "#fetch_counter" do
-    let(:hiredis) {
+  describe "fetching data from redis" do
+    let(:redis) {
       stub.as_null_object
     }
 
@@ -33,16 +33,36 @@ describe Rstatsd::Helpers do
     }
 
     before do
-      EM::Hiredis.stub(:connect).and_return(hiredis)
+      Redis.stub(:new).and_return(redis)
     end
 
-    it "should fetch all of the values from redis" do
-      with_em_connection do
-        hiredis.should_receive(:lrange).with('counter:crumdingler', 0, -1).and_return(redis_result)
-        redis_result.should_receive(:callback).and_yield(['1:1234567'])
-        fetch_counter('crumdingler') do |stats|
-          stats.should == [[1, '1234567']]
-        end
+    describe "#redis_data_for" do
+      it "should fetch all of the values from redis" do
+        redis.should_receive(:lrange).with('counter:crumdingler', 0, -1).
+          and_return(['1:1234567'])
+        redis_data_for('crumdingler')
+      end
+
+      it "should split the data into value, time pairs" do
+        redis.stub(:lrange => ['1:1234567'])
+        redis_data_for('crumdingler').should == {'1234567' => 1}
+      end
+    end
+
+    describe "#fetch_counters" do
+      it "should split the data into value, time pairs" do
+        redis.stub(:lrange => ['1:1234567'])
+        fetch_counters(['crumdingler', 'zardoz']).
+          should == {'1234567' => [1, 1]}
+      end
+
+      it "should fill in 0 when there is no data from one of the targets" do
+        redis.should_receive(:lrange).with('counter:crumdingler', 0, -1).
+          and_return(['1:1234567'])
+        redis.should_receive(:lrange).with('counter:zardoz', 0, -1).
+          and_return([])
+        fetch_counters(['crumdingler', 'zardoz']).
+          should == {'1234567' => [1, 0]}
       end
     end
   end
