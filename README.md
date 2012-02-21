@@ -28,3 +28,19 @@ Start the collection daemon and server
 Open the web server in a browser and follow the directions:
 
     $ open  http://localhost:8126/
+
+## URL Schema
+
+You can request multiple data points to be graphed simultaneously by specifying multiple targets:
+
+http://localhost:8126/stats?target=foo&target=bar
+
+## Supported data types
+
+* counters (statsd.increment, statsd.decrement)
+
+## Todo
+
+* statsd data types other than counters
+* time window graphing
+    
