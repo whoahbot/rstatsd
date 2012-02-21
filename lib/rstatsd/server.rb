@@ -20,21 +20,18 @@ module Rstatsd
 
       case @http_request_uri
       when '/'
+        response.content_type 'text/html'
+        response.content = File.open('templates/index.html').read
+        response.send_response
+      when '/stats'
         Rstatsd::Chart.new(@http_query_string).draw_chart do |chart|
           @chart = chart
-          google_chart = ERB.new(File.open('google_chart.erb').read).result(binding)
+          google_chart = ERB.new(File.open('templates/google_chart.erb').read).result(binding)
 
           response.content_type 'text/html'
           response.content = google_chart
           response.send_response
         end
-      when '/stats.json'
-        key = format_key(@http_query_string)
-        Rstatsd::Chart.new(@http_query_string)
-
-        response.content_type 'application/json'
-        response.content = @chart.data
-        response.send_response
       end
     end
   end
