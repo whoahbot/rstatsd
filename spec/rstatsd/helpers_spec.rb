@@ -45,7 +45,7 @@ describe Rstatsd::Helpers do
 
       it "should split the data into value, time pairs" do
         redis.stub(:lrange => ['1:1234567'])
-        redis_data_for('crumdingler').should == {'1234567' => [1]}
+        redis_data_for('crumdingler').should == {'1234567' => 1}
       end
     end
 
