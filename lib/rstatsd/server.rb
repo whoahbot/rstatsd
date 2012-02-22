@@ -1,4 +1,3 @@
-require 'em-hiredis'
 require 'eventmachine_httpserver'
 require 'evma_httpserver/response'
 require 'erb'
@@ -26,8 +25,8 @@ module Rstatsd
       when '/stats'
         Rstatsd::Chart.new(@http_query_string).draw_chart do |chart|
           @chart = chart
-          google_chart = ERB.new(File.open('templates/google_chart.erb').read).result(binding)
-
+          google_chart = ERB.new(File.open('templates/google_chart.erb').read).
+            result(binding)
           response.content_type 'text/html'
           response.content = google_chart
           response.send_response
