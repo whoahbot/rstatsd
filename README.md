@@ -1,6 +1,8 @@
 # rstatsd
 
-rstatsd is a ruby based daemon for capturing data from statsd clients and displaying graphs.
+rstatsd is a ruby based daemon for capturing data from statsd clients and 
+displaying graphs. It stores graph data in fixed-length data structures
+in redis.
 
 rstatsd is inspired by the work at etsy to measure anything, measure
 everything. They use a combination of node.js and graphite to capture
@@ -43,4 +45,3 @@ http://localhost:8126/stats?target=foo&target=bar
 
 * statsd data types other than counters
 * time window graphing
-    
