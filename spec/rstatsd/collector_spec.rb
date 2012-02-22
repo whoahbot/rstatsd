@@ -31,7 +31,7 @@ describe Rstatsd::Collector do
 
     it "should trim the overall size of the counter list to 10000 entries" do
       with_em_connection do
-        redis.should_receive(:ltrim).with('counter:crumdingler', 0, 10000)
+        redis.should_receive(:ltrim).with('counter:crumdingler', -10000, -1)
         Rstatsd::Collector.new(stub).receive_data('crumdingler:1|c')
       end
     end
@@ -69,7 +69,7 @@ describe Rstatsd::Collector do
 
     it "should trim the overall size of the counter list to 10000 entries" do
       with_em_connection do
-        redis.should_receive(:ltrim).with('counter:crumdingler', 0, 10000)
+        redis.should_receive(:ltrim).with('counter:crumdingler', -10000, -1)
         Rstatsd::Collector.new(stub).receive_data('crumdingler:-1|c')
       end
     end

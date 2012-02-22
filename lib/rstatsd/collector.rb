@@ -25,11 +25,11 @@ module Rstatsd
           value = redis.decr(key)
           redis.rpush(counter_key_name(key), "#{value}:#{Time.now.to_i}")
         end
-        redis.ltrim(counter_key_name(key), 0, 10000)
+        redis.ltrim(counter_key_name(key), -10000, -1)
       when 'ms'
         #update timer
         redis.rpush(timer_key_name(key), "#{fields[0]}:#{Time.now.to_i}")
-        redis.ltrim(timer_key_name(key), 0, 10000)
+        redis.ltrim(timer_key_name(key), -10000, -1)
       else
         # invalid update
       end

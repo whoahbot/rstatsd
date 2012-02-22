@@ -1,3 +1,4 @@
+require 'eventmachine'
 require 'eventmachine_httpserver'
 require 'evma_httpserver/response'
 require 'erb'
