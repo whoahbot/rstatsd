@@ -10,12 +10,8 @@ module Rstatsd
         .gsub(/[^a-zA-Z_\-0-9\.]/, '')
     end
 
-    def counter_key_name(key)
-      "counter:#{key}"
-    end
-
-    def timer_key_name(key)
-      "timer:#{key}"
+    def key_name(key)
+      "values:#{key}"
     end
 
     def redis
@@ -35,7 +31,7 @@ module Rstatsd
     end
 
     def redis_data_for(key)
-      redis.lrange(counter_key_name(key), 0, -1).inject({}) do |memo, point|
+      redis.lrange(key_name(key), 0, -1).inject({}) do |memo, point|
         val, time = point.split(":")
         memo[time] = val.to_i
         memo

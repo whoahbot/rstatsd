@@ -17,9 +17,9 @@ describe Rstatsd::Helpers do
     end
   end
 
-  describe "#counter_key_name" do
-    it "should return counter:key_name" do
-      counter_key_name('frobozz').should == 'counter:frobozz'
+  describe "#key_name" do
+    it "should return values:key_name" do
+      key_name('frobozz').should == 'values:frobozz'
     end
   end
 
@@ -38,7 +38,7 @@ describe Rstatsd::Helpers do
 
     describe "#redis_data_for" do
       it "should fetch all of the values from redis" do
-        redis.should_receive(:lrange).with('counter:crumdingler', 0, -1).
+        redis.should_receive(:lrange).with('values:crumdingler', 0, -1).
           and_return(['1:1234567'])
         redis_data_for('crumdingler')
       end

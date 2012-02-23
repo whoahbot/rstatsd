@@ -20,16 +20,15 @@ module Rstatsd
       when 'c'
         if fields[0] == '1'
           value = redis.incr(key) 
-          redis.rpush(counter_key_name(key), "#{value}:#{Time.now.to_i}")
+          redis.rpush(key_name(key), "#{value}:#{Time.now.to_i}")
         elsif fields[0] == '-1'
           value = redis.decr(key)
-          redis.rpush(counter_key_name(key), "#{value}:#{Time.now.to_i}")
+          redis.rpush(key_name(key), "#{value}:#{Time.now.to_i}")
         end
-        redis.ltrim(counter_key_name(key), -10000, -1)
+        redis.ltrim(key_name(key), -10000, -1)
       when 'ms'
-        #update timer
-        redis.rpush(timer_key_name(key), "#{fields[0]}:#{Time.now.to_i}")
-        redis.ltrim(timer_key_name(key), -10000, -1)
+        redis.rpush(key_name(key), "#{fields[0]}:#{Time.now.to_i}")
+        redis.ltrim(key_name(key), -10000, -1)
       else
         # invalid update
       end
